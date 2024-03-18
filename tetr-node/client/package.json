@@ -1,0 +1,44 @@
+{
+  "name": "crimson.js",
+  "description": "library for tetr.io",
+  "version": "0.0.4-dev",
+  "author": "RedStone576",
+  "license": "Artistic-2.0",
+  "homepage": "https://github.com/RedStone576/crimson.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RedStone576/crimson.js"
+  },
+  "bugs": {
+    "url": "https://github.com/RedStone576/crimson.js",
+    "email": "inf@outlook.co.id"
+  },
+  "keywords": [
+    "tetrio",
+    "tetr.io"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "check-watch": "tsc --noEmit --pretty --watch",
+    "build": "tsc",
+    "bundle": "tsup src/index.ts --format cjs,esm --dts --target es2022",
+    "docs": "typedoc src/index.ts --plugin typedoc-plugin-missing-exports --internalModule ref"
+  },
+  "dependencies": {
+    "msgpackr": "^1.8.5",
+    "node-fetch": "^2.6.9",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.12",
+    "@types/node-fetch": "^2.6.3",
+    "@types/ws": "^8.5.4",
+    "tsup": "^6.7.0",
+    "typedoc": "^0.24.6",
+    "typedoc-plugin-missing-exports": "^2.0.0",
+    "typescript": "^5.0.4"
+  }
+}

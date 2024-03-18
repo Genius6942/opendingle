@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    // "outDir": "./build/test",
+    "rootDir": "tetr-node",
+    "outDir": "./build/main",
+    "esModuleInterop": true,
+    "lib": ["ESNext", "DOM"],
+    "skipLibCheck": true,
+
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["./tetr-node"],
+  // "exclude": ["./node_modules/@types/webgl-ext", "./tetris-web"]
+}

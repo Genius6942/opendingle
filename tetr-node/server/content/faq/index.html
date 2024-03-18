@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Status page</title>
+    <!-- <link rel="stylesheet" href="/css/bootstrap.min.css" /> -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css"
+    />
+
+    <style>
+      :root {
+        --chunk-size: 20px;
+        --chunk-spacing: -6px;
+      }
+
+      body {
+        background: black;
+        color: white;
+        border-color: white;
+      }
+
+      input {
+        background: black;
+        color: white;
+        border-color: white;
+      }
+
+      *,
+      ::before,
+      ::after {
+        box-sizing: border-box;
+        transition: 0.2s ease;
+        font-family: "Big Shoulders Display", sans-serif;
+      }
+
+      .icon {
+        font-family: "Material Symbols Outlined";
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-feature-settings: "liga";
+        font-feature-settings: "liga";
+        -webkit-font-smoothing: antialiased;
+        /* margin-top: -3px; */
+      }
+
+      @font-face {
+        font-family: "Big Shoulders Display";
+        font-weight: 800;
+        src: url("https://worlds.tetr.io/res/font/BigShouldersDisplay-ExtraBold.ttf");
+      }
+      @font-face {
+        font-family: "Rubik Mono One";
+        font-weight: 900;
+        src: url("https://worlds.tetr.io/res/font/RubikMonoOne-Regular.ttf");
+      }
+
+      .font-bsd {
+        font-family: "Big Shoulders Display";
+      }
+
+      .font-rubik {
+        font-family: "Rubik Mono One";
+      }
+
+      .chunk {
+        clip-path: polygon(
+          var(--chunk-size) 0,
+          100% 0,
+          calc(100% - var(--chunk-size)) 100%,
+          0 100%
+        );
+        padding-left: var(--chunk-size);
+        padding-right: var(--chunk-size);
+        background: linear-gradient(90deg, #3b2535, #563a4e);
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 calc(var(--chunk-spacing) / 2);
+        position: relative;
+        overflow: visible;
+      }
+
+      .chunk-set {
+        align-items: stretch;
+        padding: 0 calc(var(--chunk-spacing) / 2);
+      }
+
+      a {
+        color: white !important;
+        text-decoration: underline !important;
+      }
+    </style>
+    <!-- <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    /> -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>
+      try {
+        eruda.init({
+          defaults: {
+            displaySize: 30,
+            theme: "Atom One Dark",
+            transparency: 1,
+          },
+        });
+        if (localStorage.getItem("eruda-auto-show") === "1") eruda.show();
+        window.addEventListener("keydown", (e) => {
+          const { key, ctrlKey } = e;
+          if (key === "e" && ctrlKey) {
+            e.preventDefault();
+            if (localStorage.getItem("eruda-auto-show") === "1") {
+              localStorage.setItem("eruda-auto-show", "0");
+              eruda.hide();
+            } else {
+              localStorage.setItem("eruda-auto-show", "1");
+              eruda.show();
+            }
+          }
+        });
+      } catch (e) {
+        alert(e);
+      }
+    </script>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "lit": "https://cdn.jsdelivr.net/npm/lit/+esm",
+          "lit/directives/unsafe-html": "https://cdn.jsdelivr.net/npm/lit-html/directives/unsafe-html.js",
+          "socket.io-client": "https://cdn.socket.io/4.4.1/socket.io.esm.min.js",
+          "notyf": "https://cdn.jsdelivr.net/npm/notyf@3.10.0/notyf.es.js"
+        }
+      }
+    </script>
+    <script type="module" src="/faq/js/index.js"></script>
+    <my-app></my-app>
+  </body>
+</html>

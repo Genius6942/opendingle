@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leaderboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="flex justify-center pt-40 min-h-screen items-center">
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>
+      try {
+        eruda.init({
+          defaults: {
+            displaySize: 30,
+            theme: "Atom One Dark",
+            transparency: 1,
+          },
+        });
+        if (localStorage.getItem("eruda-auto-show") === "1") eruda.show();
+        window.addEventListener("keydown", (e) => {
+          const { key, ctrlKey } = e;
+          if (key === "e" && ctrlKey) {
+            e.preventDefault();
+            if (localStorage.getItem("eruda-auto-show") === "1") {
+              localStorage.setItem("eruda-auto-show", "0");
+              eruda.hide();
+            } else {
+              localStorage.setItem("eruda-auto-show", "1");
+              eruda.show();
+            }
+          }
+        });
+      } catch (e) {
+        alert(e);
+      }
+    </script>
+    <div id="loader">
+      <div
+        class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-slate-900"
+      ></div>
+    </div>
+    <table class="border-collapse table-auto w-[80vw]" style="display: none" id="data">
+      <thead>
+        <tr>
+          <th
+            class="border-b border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-slate-800 text-left"
+          >
+            #
+          </th>
+          <th
+            class="border-b border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-slate-800 text-left"
+          ></th>
+          <th
+            class="border-b border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-slate-800 text-left"
+          >
+            Name
+          </th>
+          <th
+            class="border-b border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-slate-800 text-left"
+          >
+            Games
+          </th>
+          <th
+            class="border-b border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-slate-800 text-left"
+          >
+            Time
+          </th>
+          <th
+            class="border-b border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-slate-800 text-left"
+          >
+            Solo wins
+          </th>
+          <th
+            class="border-b border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-slate-800 text-left"
+          >
+            Solo losses
+          </th>
+          <th
+            class="border-b border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-slate-800 text-left"
+          >
+            Last time played
+          </th>
+        </tr>
+      </thead>
+      <tbody id="data"></tbody>
+    </table>
+
+    <script defer>
+      const leaderboard = [];
+
+      const createTableItem = (text) => {
+        const td = document.createElement("td");
+        td.className =
+          "border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400";
+        td.innerText = text;
+        return td;
+      };
+
+      const createTableImage = (src) => {
+        const td = document.createElement("td");
+        td.className =
+          "border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400";
+        const img = document.createElement("img");
+        img.src = src;
+        img.addEventListener("error", () => (img.src = "https://tetr.io/res/avatar.png"));
+        img.className = "w-8 h-8 rounded-sm";
+        td.appendChild(img);
+        return td;
+      };
+
+      const loadData = async () => {
+        const data = await fetch("/users")
+          .then((res) => res.json())
+          .catch((err) => alert("Failed to load data, please try again"));
+        return data;
+      };
+
+      function convertMillisecondsToTime(ms) {
+        if (typeof ms !== "number" || ms < 0) {
+          throw new Error("Input must be a non-negative number of milliseconds");
+        }
+
+        // Calculate days, hours, minutes, seconds, and milliseconds
+        const days = Math.floor(ms / (24 * 60 * 60 * 1000));
+        const hours = Math.floor((ms % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+        const minutes = Math.floor((ms % (60 * 60 * 1000)) / (60 * 1000));
+        const seconds = Math.floor((ms % (60 * 1000)) / 1000);
+        const milliseconds = ms % 1000;
+
+        // Create and return the result object
+        const result = {
+          days,
+          hours,
+          minutes,
+          seconds,
+          milliseconds,
+        };
+
+        return result;
+      }
+      function formatTimeObject(timeObject) {
+        const { days, hours, minutes, seconds, milliseconds } = timeObject;
+
+        // Create an array to store the non-zero time components
+        const timeComponents = [];
+
+        if (days > 0) {
+          timeComponents.push(`${days} day${days !== 1 ? "s" : ""}`);
+        }
+
+        if (hours > 0) {
+          timeComponents.push(`${hours} hour${hours !== 1 ? "s" : ""}`);
+        }
+
+        if (minutes > 0) {
+          timeComponents.push(`${minutes} minute${minutes !== 1 ? "s" : ""}`);
+        }
+
+        if (seconds > 0) {
+          timeComponents.push(`${seconds} second${seconds !== 1 ? "s" : ""}`);
+        }
+
+        // Join the time components into a formatted string
+        const formattedString = timeComponents.join(", ");
+
+        return formattedString;
+      }
+
+      function formatDateToString(date) {
+        if (!(date instanceof Date) || isNaN(date)) {
+          console.log(date);
+          throw new Error("Invalid Date object provided");
+        }
+
+        // Extract components from the Date object
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+        const day = String(date.getDate()).padStart(2, "0");
+        const year = date.getFullYear();
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+
+        // Convert hours to 12-hour format
+        hours = hours % 12 || 12;
+
+        // Create the formatted string
+        const formattedString = `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`;
+
+        return formattedString;
+      }
+
+      let data = [];
+      const loadLeaderboard = async () => {
+        data = await loadData();
+        const table = document.getElementById("data");
+        const loader = document.getElementById("loader");
+        loader.style.display = "none";
+        table.style.display = "table";
+        data
+          .slice(0, Math.min(50, data.length - 1))
+          .sort((a, b) => b.stats.games - a.stats)
+          .forEach((user, index) => {
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer";
+            tr.onclick = () => window.open("https://ch.tetr.io/u/" + user.id, "_blank");
+            tr.appendChild(createTableItem(index + 1));
+            tr.appendChild(createTableImage(user.avatar));
+            tr.appendChild(createTableItem(user.name));
+            tr.appendChild(createTableItem(user.stats.games));
+            tr.appendChild(
+              createTableItem(
+                formatTimeObject(convertMillisecondsToTime(user.stats.time))
+              )
+            );
+            tr.appendChild(createTableItem(user.stats.solo.wins));
+            tr.appendChild(createTableItem(user.stats.solo.losses));
+            tr.appendChild(
+              createTableItem(
+                formatDateToString(new Date(Date.parse(user.stats.lastGame)))
+              )
+            );
+            table.appendChild(tr);
+          });
+      };
+
+      loadLeaderboard();
+    </script>
+  </body>
+</html>

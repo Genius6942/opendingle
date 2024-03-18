@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log viewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .slider {
+        -webkit-appearance: none;
+        appearance: none;
+      }
+
+      .slider:focus {
+        outline: none;
+      }
+
+      .slider::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 12px;
+        border-radius: 999px;
+        border: 4px solid black;
+        background-color: white;
+      }
+
+      .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 30px;
+        height: 30px;
+        background: white;
+        border-radius: 999px;
+        border: 4px solid black;
+        margin-top: -11px;
+        box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+      }
+    </style>
+    <script
+      type="module"
+      crossorigin
+      src="/log-viewer/assets/index-e6031fed.js"
+    ></script>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>
+      try {
+        eruda.init({
+          defaults: {
+            displaySize: 30,
+            theme: "Atom One Dark",
+            transparency: 1,
+          },
+        });
+        if (localStorage.getItem("eruda-auto-show") === "1") eruda.show();
+        window.addEventListener("keydown", (e) => {
+          const { key, ctrlKey } = e;
+          if (key === "e" && ctrlKey) {
+            e.preventDefault();
+            if (localStorage.getItem("eruda-auto-show") === "1") {
+              localStorage.setItem("eruda-auto-show", "0");
+              eruda.hide();
+            } else {
+              localStorage.setItem("eruda-auto-show", "1");
+              eruda.show();
+            }
+          }
+        });
+      } catch (e) {
+        alert(e);
+      }
+    </script>
+    <div id="app" class="flex justify-center items-center h-screen"></div>
+    <div
+      class="fixed w-screen bottom-0 left-0 p-10 flex flex-col items-center justify-center gap-4"
+    >
+      <input
+        type="range"
+        id="slider"
+        class="slider outline-none w-[90vw] m-auto"
+      />
+      <div class="flex gap-3 text-2xl items-center">
+        <div id="frame"></div>
+        <div class="w-1 h-10 bg-black"></div>
+        <div id="keys"></div>
+      </div>
+    </div>
+  </body>
+</html>
