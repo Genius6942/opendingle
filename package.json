@@ -59,12 +59,7 @@
     "build": ". ./build.sh",
     "build-vite": "vite build && sed -i 's|assets|engine/assets|g' build/main/server/content/engine/index.html",
     "build-logviewer": "vite --config log-viewer.vite.config.js build --emptyOutDir && sed -i 's|assets|log-viewer/assets|g' tetr-node/server/content/log-viewer/index.html",
-    "compile": ". build.sh",
-    "deploy": "gcloud app deploy",
-    "render": "bun run render/index.ts",
-    "dev-engine": "cd engine && rm -rf build && mkdir build && cd build && cmake .. && cmake --build . && cd .. && cd .. && echo \"compiled build\" && bun run tetr-node/engine-test.ts",
-    "dev-engine-test": "clang++ -std=c++17 -o engine/test engine/test.cpp && chmod +x engine/test && echo \"compiled engine\" && engine/test",
-    "dev-termtris": "cd engine && rm -rf build && mkdir build && cd build && cmake .. && cmake --build . && cd .. && cd .. && echo \"compiled build\""
+    "compile": ". build.sh"
   },
   "engines": {
     "node": "20.x"
