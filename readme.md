@@ -31,3 +31,5 @@ npx ts-node tetr-node/index.ts
 ```
 
 # Now update the rest of the bot yourself, Haelp and Luke are too lazy to do it for you.
+
+Side note: you probably shouldn't bring your bot into a Super Streamer Lobby
